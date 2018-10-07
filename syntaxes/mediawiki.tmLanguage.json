@@ -1,0 +1,235 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "MediaWiki",
+	"patterns": [
+		{ "include": "#comment" },
+		{ "include": "#emphasis" },
+		{ "include": "#block" },
+		{ "include": "#tag" },
+		{ "include": "#table" },
+		{ "include": "#heading" },
+		{ "include": "#link" }
+	],
+	"repository": {
+		"link": {
+			"patterns": [
+				{
+					"name": "meta.tag.link.internal",
+					"match": "(\\[\\[)([^\\|]*)((\\|)(.*))?(\\]\\])",
+					"captures": {
+						"1": { "name": "punctuation.definition.tag.begin" },
+						"2": { "name": "markup.underline.link" },
+						"4": { "name": "punctuation.definition.tag" },
+						"5": { "name": "string.unquoted" },
+						"6": { "name": "punctuation.definition.tag.end" }
+					}
+				}
+			]
+		},
+		"block": {
+			"patterns": [
+				{
+					"begin": "(<)(\\w+)(.*?)(>)",
+					"end": "(<\/)(\\2)(>)",
+					"name": "meta.tag.block.any.html",
+					"beginCaptures": {
+						"1": { "name": "punctuation.definition.tag.begin" },
+						"2": { "name": "entity.name.tag.block.any" },
+						"3": {
+							"patterns": [
+								{ "include": "#attribute" }
+							]
+						 },
+						"4": { "name": "punctuation.definition.tag.end" }
+					},
+					"endCaptures": {
+						"1": { "name": "punctuation.definition.tag.begin" },
+						"2": { "name": "entity.name.tag.block.any" },
+						"3": { "name": "punctuation.definition.tag.end" }
+					},
+					"patterns": [
+						{ "include": "#tag" }
+					]
+				}
+			]
+		},
+		"comment": {
+			"begin": "<!--",
+			"captures": {
+				"0": {
+					"name": "punctuation.definition.comment.html"
+				}
+			},
+			"end": "-->",
+			"name": "comment.block.html",
+			"patterns": [
+				{
+					"match": "\\G-?>",
+					"name": "invalid.illegal.characters-not-allowed-here.html"
+				},
+				{
+					"match": "<!--(?!>)|<!-(?=-->)",
+					"name": "invalid.illegal.characters-not-allowed-here.html"
+				},
+				{
+					"match": "--!>",
+					"name": "invalid.illegal.characters-not-allowed-here.html"
+				}
+			]
+		},
+		"emphasis": {
+			"patterns": [
+				{
+					"match": "(('''''.*'''''))",
+					"captures": {
+						"1": { "name": "markup.bold" },
+						"2": { "name": "markup.italic" }
+					}
+				},
+				{
+					"name": "markup.bold",
+					"match": "'''.*'''"
+				},
+				{
+					"name": "markup.italic",
+					"match": "''.*''"
+				}
+			]
+		},
+		"heading": {
+			"patterns": [
+				{
+					"name": "meta.tag.block.heading",
+					"match": "(===?=?=?=?)(.*)(\\1)",
+					"captures": {
+						"1": { "name": "punctuation.definition.tag.begin" },
+						"2": { "name": "markup.bold" },
+						"3": { "name": "punctuation.definition.tag.end" }
+					}
+				}
+			]
+		},
+		"tag": {
+			"patterns": [
+				{
+					"name": "meta.tag.begin",
+					"match": "(<\/?)(\\w+)(.*?)(\/?>)",
+					"captures": {
+						"1": { "name": "punctuation.definition.tag.begin" },
+						"2": { "name": "entity.name.tag.block.any" },
+						"3": {
+							"patterns": [
+								{ "include": "#attribute" }
+							]
+						 },
+						"4": { "name": "punctuation.definition.tag.end" }
+					}
+				},
+				{
+					"name": "meta.tag.end",
+					"match": "(<\/)(\\w+)(>)",
+					"captures": {
+						"1": { "name": "punctuation.definition.tag.begin" },
+						"2": { "name": "entity.name.tag.block.any" },
+						"3": { "name": "punctuation.definition.tag.end" }
+					}
+				}
+			]
+		},
+		"table": {
+			"patterns": [
+				{
+					"name": "meta.tag.block.table",
+					"begin": "^\\s*({\\|)(.*?)$",
+					"end": "^\\s*\\|}",
+					"beginCaptures": {
+						"1": { "name": "punctuation.definition.tag.begin" },
+						"2": {
+							"patterns": [
+								{ "include": "#attribute" }
+							]
+						},
+						"3": { "name": "invalid.illegal" }
+					},
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.tag.end" }
+					},
+					"patterns": [
+						{
+							"name": "meta.tag.block.table-caption",
+							"begin": "^\\s*(\\|\\+)",
+							"end": "$",
+							"beginCaptures": {
+								"1": { "name": "punctuation.definition.tag.begin" }
+							}
+						},
+						{
+							"name": "meta.tag.block.table-row",
+							"match": "^\\s*(\\|\\-)[\\s]*(.*)",
+							"captures": {
+								"1": { "name": "punctuation.definition.tag.begin" },
+								"2": { "name": "invalid.illegal" }
+							}
+						},
+						{
+							"name": "meta.tag.block.table-heading",
+							"begin": "^\\s*(!)",
+							"end": "$",
+							"beginCaptures": {
+								"1": { "name": "punctuation.definition.tag.begin" }
+							}
+						},
+						{
+							"name": "meta.tag.block.table-data",
+							"begin": "^\\s*(\\|)",
+							"end": "$",
+							"beginCaptures": {
+								"1": { "name": "punctuation.definition.tag.begin" }
+							},
+							"patterns": [
+								{ "include": "#data" }
+							]
+						}
+					]
+				}
+			],
+			"repository": {
+				"data": {
+					"patterns": [
+						{
+							"name": "meta.tag.block.table-data",
+							"match": "(((.*?)(\\|)([^\\|].*?))|(.*?))((\\|\\|)(.*))?",
+							"captures": {
+								"3": {
+									"patterns": [
+										{ "include": "#attribute" }
+									]
+								},
+								"4": { "name": "punctuation.definition.tag.end" },
+								"8": { "name": "punctuation.definition.tag.begin" },
+								"9": { 
+									"patterns": [
+										{ "include": "#data" }
+									]
+								}
+							}
+						}
+					]
+				}
+			}
+		},
+		"attribute": {
+			"patterns": [
+				{
+					"match": "(\\w?)[ ]*(=[ ]*(([\"].*?[\"])|(['].*?['])))?",
+					"captures": {
+						"1": { "name": "entity.other.attribute-name" },
+						"4": { "name": "string.quoted.double" },
+						"5": { "name": "string.quoted.single" }
+					}
+				}
+			]
+		}
+	},
+	"scopeName": "source.mediawiki"
+}
