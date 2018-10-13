@@ -9,6 +9,7 @@ patterns:
   - include: "#comment"
   - include: "#nowiki"
   - include: "#preformatted"
+  - include: "#entity"
   - include: "#inserted"
   - include: "#deleted"
   - include: "#emphasis"
@@ -21,6 +22,11 @@ patterns:
   - include: "#template"
 
 repository:
+
+  entity:
+    patterns:
+      - name: constant.character.entity
+        match: '&\w+;'
 
   nowiki:
     patterns:
