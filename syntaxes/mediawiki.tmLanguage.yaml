@@ -39,12 +39,15 @@ repository:
     patterns:
       -
         name: meta.tag.block.inserted
-        begin: (<)(ins|u)(>)
+        begin: (<)(ins|u)(.*?)(>)
         end: (</)(\2)(>)
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: entity.name.tag }
-          3: { name: punctuation.definition.tag.end }
+          3:
+            patterns:
+              - include: "#attribute"
+          4: { name: punctuation.definition.tag.end }
         endCaptures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: entity.name.tag }
@@ -55,12 +58,15 @@ repository:
     patterns:
       -
         name: meta.tag.block.deleted
-        begin: (<)(del|s)(>)
+        begin: (<)(del|s)(.*?)(>)
         end: (</)(\2)(>)
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: entity.name.tag }
-          3: { name: punctuation.definition.tag.end }
+          3:
+            patterns:
+              - include: "#attribute"
+          4: { name: punctuation.definition.tag.end }
         endCaptures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: entity.name.tag }
