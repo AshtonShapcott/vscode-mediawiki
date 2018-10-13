@@ -6,6 +6,7 @@ fileTypes:
   - wiki
 
 patterns:
+  - include: "#nowiki"
   - include: "#comment"
   - include: "#emphasis"
   - include: "#block"
@@ -17,6 +18,20 @@ patterns:
   - include: "#template"
 
 repository:
+
+  nowiki:
+    patterns:
+      - name: meta.tag.block.nowiki
+        begin: (<)(nowiki)(>)
+        end: (</)(nowiki)(>)
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+          3: { name: punctuation.definition.tag.end }
+        endCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+          3: { name: punctuation.definition.tag.end }
 
   list:
     comment: >
@@ -206,7 +221,7 @@ repository:
       
       data:
         name: meta.tag.block.table-data
-        begin: "^\\s*(\\|)((.*?)(\\|^[\\|]))?"
+        begin: ^\s*(\|)((.*?)(\|^[\|]))?
         end: "$"
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
@@ -216,15 +231,13 @@ repository:
           4: { name: punctuation.definition.tag }
         patterns:
           - name: meta.tag.block.table-heading
-            match: "(\\|\\|)((.*?)(\\|^[\\|]))?"
+            match: (\|\|)((.*?)(\|^[\|]))?
             captures:
               1: { name: punctuation.definition.tag.begin }
               3:
                 patterns:
                   - include: "#attribute"
               4: { name: punctuation.definition.tag }
-      
-      
 
   attribute:
     patterns:
