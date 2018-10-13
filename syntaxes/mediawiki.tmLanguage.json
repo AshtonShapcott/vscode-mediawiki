@@ -13,9 +13,29 @@
 		{ "include": "#table" },
 		{ "include": "#heading" },
 		{ "include": "#link" },
+		{ "include": "#list" },
 		{ "include": "#template" }
 	],
 	"repository": {
+		"list": {
+			"patterns": [
+				{
+					"name": "markup.list.numbered",
+					"match": "^(#).*$",
+					"captures": {
+						"1": { "name": "markup.punctuation.list.beginning" }
+					}
+				},
+				{
+					"name": "markup.list.unnumbered",
+					"match": "^([*]).*$",
+					"captures": {
+						"1": { "name": "markup.punctuation.list.beginning" }
+					}
+				}
+			]
+		},
+
 		"template": {
 			"patterns": [
 				{
@@ -218,7 +238,7 @@
 							"comment": "Inaccurate right now. Needs to handle having '!!' or similar on capture 3.",
 							"name": "meta.tag.block.table-heading",
 							"begin": "^\\s*(!)((.*?)(\\|))?",
-							"end": "$",
+							"end": "(?=[|]|$)",
 							"beginCaptures": {
 								"1": { "name": "punctuation.definition.tag.begin" },
 								"3": {
