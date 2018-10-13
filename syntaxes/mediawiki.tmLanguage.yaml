@@ -6,10 +6,10 @@ fileTypes:
   - wiki
 
 patterns:
+  - include: "#comment"
   - include: "#nowiki"
   - include: "#inserted"
   - include: "#deleted"
-  - include: "#comment"
   - include: "#emphasis"
   - include: "#block"
   - include: "#tag"
