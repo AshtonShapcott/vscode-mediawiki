@@ -8,6 +8,7 @@ fileTypes:
 patterns:
   - include: "#comment"
   - include: "#nowiki"
+  - include: "#preformatted"
   - include: "#inserted"
   - include: "#deleted"
   - include: "#emphasis"
@@ -72,6 +73,24 @@ repository:
           2: { name: entity.name.tag }
           3: { name: punctuation.definition.tag.end }
         contentName: markup.deleted
+
+  preformatted:
+    patterns:
+      -
+        name: meta.tag.block.preformatted
+        begin: (<)(pre)(.*?)(>)
+        end: (</)(\2)(>)
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+          3:
+            patterns:
+              - include: "#attribute"
+          4: { name: punctuation.definition.tag.end }
+        endCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+          3: { name: punctuation.definition.tag.end }
 
   list:
     patterns:
