@@ -1,6 +1,10 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "MediaWiki",
+	"fileTypes": [
+		"mediawiki",
+		"wiki"
+	],
 	"patterns": [
 		{ "include": "#comment" },
 		{ "include": "#emphasis" },
@@ -8,9 +12,47 @@
 		{ "include": "#tag" },
 		{ "include": "#table" },
 		{ "include": "#heading" },
-		{ "include": "#link" }
+		{ "include": "#link" },
+		{ "include": "#template" }
 	],
 	"repository": {
+		"template": {
+			"patterns": [
+				{
+					"name": "meta.template",
+					"begin": "({{)([^\\|]*)",
+					"end": "}}",
+					"beginCaptures": {
+						"1": { "name": "punctuation.definition.tag.begin" },
+						"2": { "name": "entity.name.function" }
+					},
+					"endCaptures": {
+						"0": { "name": "punctuation.definition.tag.end" }
+					},
+					"patterns": [
+						{
+							"name": "meta.template.attribute",
+							"begin": "(\\|)([^\\|]*?)=",
+							"end": "(?=}}|[|])",
+							"beginCaptures": {
+								"1": { "name": "punctuation.definition.tag.begin" },
+								"2": { "name": "entity.other.attribute-name" }
+							},
+							"patterns": [
+								{ "include": "$self" }
+							]
+						},
+						{
+							"name": "meta.template.value",
+							"match": "(\\|)(.*)",
+							"captures": {
+								"1": { "name": "punctuation.definition.tag.begin" }
+							}
+						}
+					]
+				}
+			]
+		},
 		"link": {
 			"patterns": [
 				{
@@ -29,9 +71,9 @@
 		"block": {
 			"patterns": [
 				{
+					"name": "meta.tag.block.any.html",
 					"begin": "(<)(\\w+)(.*?)(>)",
 					"end": "(<\/)(\\2)(>)",
-					"name": "meta.tag.block.any.html",
 					"beginCaptures": {
 						"1": { "name": "punctuation.definition.tag.begin" },
 						"2": { "name": "entity.name.tag.block.any" },
@@ -54,6 +96,7 @@
 			]
 		},
 		"comment": {
+			"name": "comment.block.html",
 			"begin": "<!--",
 			"captures": {
 				"0": {
@@ -61,7 +104,6 @@
 				}
 			},
 			"end": "-->",
-			"name": "comment.block.html",
 			"patterns": [
 				{
 					"match": "\\G-?>",
@@ -155,6 +197,7 @@
 						"0": { "name": "punctuation.definition.tag.end" }
 					},
 					"patterns": [
+						{ "include": "#template" },
 						{
 							"name": "meta.tag.block.table-caption",
 							"begin": "^\\s*(\\|\\+)",
@@ -172,22 +215,63 @@
 							}
 						},
 						{
+							"comment": "Inaccurate right now. Needs to handle having '!!' or similar on capture 3.",
 							"name": "meta.tag.block.table-heading",
-							"begin": "^\\s*(!)",
+							"begin": "^\\s*(!)((.*?)(\\|))?",
 							"end": "$",
 							"beginCaptures": {
-								"1": { "name": "punctuation.definition.tag.begin" }
-							}
-						},
-						{
-							"name": "meta.tag.block.table-data",
-							"begin": "^\\s*(\\|)",
-							"end": "$",
-							"beginCaptures": {
-								"1": { "name": "punctuation.definition.tag.begin" }
+								"1": { "name": "punctuation.definition.tag.begin" },
+								"3": {
+									"patterns": [
+										{ "include": "#attribute" }
+									]
+								},
+								"4": { "name": "punctuation.definition.tag" }
 							},
 							"patterns": [
-								{ "include": "#data" }
+								{
+									"name": "meta.tag.block.table-heading",
+									"match": "(!!)((.*?)(\\|))?",
+									"captures": {
+										"1": { "name": "punctuation.definition.tag.begin" },
+										"3": {
+											"patterns": [
+												{ "include": "#attribute" }
+											]
+										},
+										"4": { "name": "punctuation.definition.tag" }
+									}
+								}
+							]
+						},
+						{
+							"comment": "Inaccurate right now. Needs to handle having '!!' or similar on capture 3.",
+							"name": "meta.tag.block.table-data",
+							"begin": "^\\s*(\\|)((.*?)(\\|^[\\|]))?",
+							"end": "$",
+							"beginCaptures": {
+								"1": { "name": "punctuation.definition.tag.begin" },
+								"3": {
+									"patterns": [
+										{ "include": "#attribute" }
+									]
+								},
+								"4": { "name": "punctuation.definition.tag" }
+							},
+							"patterns": [
+								{
+									"name": "meta.tag.block.table-heading",
+									"match": "(\\|\\|)((.*?)(\\|^[\\|]))?",
+									"captures": {
+										"1": { "name": "punctuation.definition.tag.begin" },
+										"3": {
+											"patterns": [
+												{ "include": "#attribute" }
+											]
+										},
+										"4": { "name": "punctuation.definition.tag" }
+									}
+								}
 							]
 						}
 					]
