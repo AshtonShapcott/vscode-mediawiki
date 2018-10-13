@@ -11,16 +11,31 @@
         "Programming Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "mediawiki",
-            "aliases": ["MediaWiki", "mediawiki"],
-            "extensions": [".mediawiki",".wiki"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "mediawiki",
-            "scopeName": "source.mediawiki",
-            "path": "./syntaxes/mediawiki.tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "mediawiki",
+                "aliases": [
+                    "MediaWiki",
+                    "mediawiki"
+                ],
+                "extensions": [
+                    ".mediawiki",
+                    ".wiki"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "mediawiki",
+                "scopeName": "source.mediawiki",
+                "path": "./syntaxes/mediawiki.tmLanguage.json"
+            }
+        ]
+    },
+    "devDependencies": {
+        "gulp": "^3.9.1",
+        "gulp-yaml": "^2.0.2",
+        "yaml": "^1.0.0"
     }
 }
