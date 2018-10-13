@@ -4,6 +4,7 @@ scopeName: source.mediawiki
 fileTypes:
   - mediawiki
   - wiki
+
 patterns:
   - include: "#comment"
   - include: "#emphasis"
@@ -14,6 +15,7 @@ patterns:
   - include: "#link"
   - include: "#list"
   - include: "#template"
+
 repository:
 
   list:
@@ -64,6 +66,15 @@ repository:
           4: { name: punctuation.definition.tag }
           5: { name: string.unquoted }
           6: { name: punctuation.definition.tag.end }
+      - name: meta.tag.link.external
+        match: (\[)(.*?)[\s]+(.*?)(\])
+        captures:
+          1: { name: punctuation.definition.tag.begin }
+          2:
+            patterns:
+              - include: "#url"
+          3: { name: string.unquoted }
+          4: { name: punctuation.definition.tag.end }
 
   block:
     patterns:
@@ -151,68 +162,69 @@ repository:
           0: { name: punctuation.definition.tag.end }
         patterns:
           - include: "#template"
-          - name: meta.tag.block.table-caption
-            begin: "^\\s*(\\|\\+)"
-            end: "$"
-            beginCaptures:
-              1: { name: punctuation.definition.tag.begin }
-          - name: meta.tag.block.table-row
-            match: "^\\s*(\\|\\-)[\\s]*(.*)"
-            captures:
-              1: { name: punctuation.definition.tag.begin }
-              2: { name: invalid.illegal }
-          - comment: "Inaccurate right now. Needs to handle having '!!' or similar on capture 3."
-            name: meta.tag.block.table-heading
-            begin: "^\\s*(!)((.*?)(\\|))?"
-            end: "(?=[|]|$)"
-            beginCaptures:
-              1: { name: punctuation.definition.tag.begin }
-              3:
-                patterns:
-                  - include: "#attribute"
-              4: { name: punctuation.definition.tag }
-            patterns:
-              - name: meta.tag.block.table-heading
-                match: "(!!)((.*?)(\\|))?"
-                captures:
-                  1: { name: punctuation.definition.tag.begin }
-                  3:
-                    patterns:
-                      - include: "#attribute"
-                  4: { name: punctuation.definition.tag }
-          - comment: "Inaccurate right now. Needs to handle having '!!' or similar on capture 3."
-            name: meta.tag.block.table-data
-            begin: "^\\s*(\\|)((.*?)(\\|^[\\|]))?"
-            end: "$"
-            beginCaptures:
-              1: { name: punctuation.definition.tag.begin }
-              3:
-                patterns:
-                  - include: "#attribute"
-              4: { name: punctuation.definition.tag }
-            patterns:
-              - name: meta.tag.block.table-heading
-                match: "(\\|\\|)((.*?)(\\|^[\\|]))?"
-                captures:
-                  1: { name: punctuation.definition.tag.begin }
-                  3:
-                    patterns:
-                      - include: "#attribute"
-                  4: { name: punctuation.definition.tag }
+          - include: "#caption"
+          - include: "#row"
+          - include: "#heading"
+          - include: "#data"
     repository:
-      data:
+      caption:
+        name: meta.tag.block.table-caption
+        begin: "^\\s*(\\|\\+)"
+        end: "$"
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+
+      row:
+        name: meta.tag.block.table-row
+        match: "^\\s*(\\|\\-)[\\s]*(.*)"
+        captures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: invalid.illegal }
+      
+      heading:
+        name: meta.tag.block.table.heading
+        begin: ^\s*(!)((.*?)(\|))?(.*?)(?=!!)
+        end: $
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          3:
+            patterns:
+              - include: "#attribute"
+          4: { name: punctuation.definition.tag }
+          5: { name: markup.bold }
         patterns:
-          - name: meta.tag.block.table-data
-            match: "(((.*?)(\\|)([^\\|].*?))|(.*?))((\\|\\|)(.*))?"
+          -
+            name: meta.tag.block.table.heading.inline
+            match: (!!)((.*?)(\|))?(.*?)(?=(!!)|$)
             captures:
+              1: { name: punctuation.definition.tag.begin }
               3:
                 patterns:
                   - include: "#attribute"
-              4: { name: punctuation.definition.tag.end }
-              8: { name: punctuation.definition.tag.begin }
-              9:
+              4: { name: punctuation.definition.tag }
+              5: { name: markup.bold }
+      
+      data:
+        name: meta.tag.block.table-data
+        begin: "^\\s*(\\|)((.*?)(\\|^[\\|]))?"
+        end: "$"
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          3:
+            patterns:
+              - include: "#attribute"
+          4: { name: punctuation.definition.tag }
+        patterns:
+          - name: meta.tag.block.table-heading
+            match: "(\\|\\|)((.*?)(\\|^[\\|]))?"
+            captures:
+              1: { name: punctuation.definition.tag.begin }
+              3:
                 patterns:
-                  - include: "#data"
+                  - include: "#attribute"
+              4: { name: punctuation.definition.tag }
+      
+      
 
   attribute:
     patterns:
@@ -221,3 +233,10 @@ repository:
           1: { name: entity.other.attribute-name }
           4: { name: string.quoted.double }
           5: { name: string.quoted.single }
+
+  url:
+    patterns:
+      - name: markup.underline.link
+        match: (?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#\[\]@!\$&'\(\)\*\+,;=.]+
+      - name: invalid.illegal.characters-not-allowed-here
+        match: .*

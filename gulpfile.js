@@ -3,9 +3,12 @@ var yaml = require("gulp-yaml");
 
 gulp.task("yaml", () =>
     gulp.src("syntaxes/*.yaml")
-        .pipe(yaml({
-            space: 2,
-            schema: "DEFAULT_FULL_SCHEMA"
-        }))
+        .pipe(yaml())
         .pipe(gulp.dest("syntaxes/"))
 );
+
+gulp.task("yaml:watch", () =>
+    gulp.watch("syntaxes/*.yaml", [ "yaml" ])
+);
+
+gulp.task("watch", [ "yaml:watch" ]);
