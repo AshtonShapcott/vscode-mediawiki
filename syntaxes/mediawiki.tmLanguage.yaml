@@ -101,9 +101,12 @@ repository:
   list:
     patterns:
       - name: markup.list
-        match: ^([#*;:]+).*$
-        captures:
+        begin: ^([#*;:]+)
+        end: $
+        beginCaptures:
           1: { name: markup.bold }
+        patterns:
+          - include: $self
 
   template:
     patterns:
@@ -132,7 +135,7 @@ repository:
   link:
     patterns:
       - name: meta.tag.link.internal
-        match: (\[\[)([^\|]*)((\|)(.*))?(\]\])
+        match: (\[\[)([^\|]*)((\|)(.*?))?(\]\])
         captures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: markup.underline.link }
@@ -256,7 +259,7 @@ repository:
       
       heading:
         name: meta.tag.block.table.heading
-        begin: ^\s*(!)((.*?)(\|))?(.*?)(?=!!)
+        begin: ^\s*(!)((.*?)(\|))?(.*?)(?=(!!)|$)
         end: $
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
