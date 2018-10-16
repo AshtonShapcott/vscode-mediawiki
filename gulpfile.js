@@ -12,3 +12,5 @@ gulp.task("yaml:watch", () =>
 );
 
 gulp.task("watch", [ "yaml:watch" ]);
+
+gulp.task("default", [ "yaml" ]);
