@@ -7,13 +7,8 @@ fileTypes:
 
 patterns:
   - include: "#comment"
-  - include: "#nowiki"
-  - include: "#preformatted"
   - include: "#entity"
-  - include: "#inserted"
-  - include: "#deleted"
   - include: "#emphasis"
-  - include: "#block"
   - include: "#tag"
   - include: "#table"
   - include: "#heading"
@@ -27,76 +22,6 @@ repository:
     patterns:
       - name: constant.character.entity
         match: '&\w+;'
-
-  nowiki:
-    patterns:
-      - name: meta.tag.block.nowiki
-        begin: (<)(nowiki)(>)
-        end: (</)(nowiki)(>)
-        beginCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
-          3: { name: punctuation.definition.tag.end }
-        endCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
-          3: { name: punctuation.definition.tag.end }
-
-  inserted:
-    patterns:
-      -
-        name: meta.tag.block.inserted
-        begin: (<)(ins|u)(.*?)(>)
-        end: (</)(\2)(>)
-        beginCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
-          3:
-            patterns:
-              - include: "#attribute"
-          4: { name: punctuation.definition.tag.end }
-        endCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
-          3: { name: punctuation.definition.tag.end }
-        contentName: markup.underline
-  
-  deleted:
-    patterns:
-      -
-        name: meta.tag.block.deleted
-        begin: (<)(del|s)(.*?)(>)
-        end: (</)(\2)(>)
-        beginCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
-          3:
-            patterns:
-              - include: "#attribute"
-          4: { name: punctuation.definition.tag.end }
-        endCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
-          3: { name: punctuation.definition.tag.end }
-        contentName: markup.deleted
-
-  preformatted:
-    patterns:
-      -
-        name: meta.tag.block.preformatted
-        begin: (<)(pre)(.*?)(>)
-        end: (</)(\2)(>)
-        beginCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
-          3:
-            patterns:
-              - include: "#attribute"
-          4: { name: punctuation.definition.tag.end }
-        endCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
-          3: { name: punctuation.definition.tag.end }
 
   list:
     patterns:
@@ -152,25 +77,6 @@ repository:
           3: { name: string.unquoted }
           4: { name: punctuation.definition.tag.end }
 
-  block:
-    patterns:
-      - name: meta.tag.block.any.html
-        begin: (<)(\w+)(.*?)(>)
-        end: (</)(\2)(>)
-        beginCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag.block.any }
-          3:
-            patterns:
-              - include: "#attribute"
-          4: { name: punctuation.definition.tag.end }
-        endCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag.block.any }
-          3: { name: punctuation.definition.tag.end }
-        patterns:
-          - include: "#tag"
-
   comment:
     name: comment.block.html
     begin: "<!--"
@@ -207,8 +113,14 @@ repository:
 
   tag:
     patterns:
+      - include: "#nowiki"
+      - include: "#html"
+      - include: "#preformatted"
+      - include: "#inserted"
+      - include: "#deleted"
+
       - name: meta.tag.begin
-        match: "(</?)(\\w+)(.*?)(/?>)"
+        match: (<)(\w+)(.*?)(/?>)
         captures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: entity.name.tag.block.any }
@@ -216,12 +128,102 @@ repository:
             patterns:
               - include: "#attribute"
           4: { name: punctuation.definition.tag.end }
+
       - name: meta.tag.end
-        match: "(</)(\\w+)(>)"
+        match: (</)(\w+)(>)
         captures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: entity.name.tag.block.any }
           3: { name: punctuation.definition.tag.end }
+
+    repository:
+      html:
+        patterns:
+          - name: meta.tag.block.html
+            begin: (<)(html)(>)
+            end: (</)(html)(>)
+            beginCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3: { name: punctuation.definition.tag.end }
+            endCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3: { name: punctuation.definition.tag.end }
+            patterns:
+              - include: text.html.basic
+
+      nowiki:
+        patterns:
+          - name: meta.tag.block.nowiki
+            begin: (<)(nowiki)(>)
+            end: (</)(nowiki)(>)
+            beginCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3: { name: punctuation.definition.tag.end }
+            endCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3: { name: punctuation.definition.tag.end }
+
+      inserted:
+        patterns:
+          -
+            name: meta.tag.block.inserted
+            begin: (<)(ins|u)(.*?)(>)
+            end: (</)(\2)(>)
+            beginCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3:
+                patterns:
+                  - include: "#attribute"
+              4: { name: punctuation.definition.tag.end }
+            endCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3: { name: punctuation.definition.tag.end }
+            contentName: markup.underline
+      
+      deleted:
+        patterns:
+          -
+            name: meta.tag.block.deleted
+            begin: (<)(del|s)(\s+.*?)?(>)
+            end: (</)(\2)(>)
+            beginCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3:
+                patterns:
+                  - include: "#attribute"
+              4: { name: punctuation.definition.tag.end }
+            endCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3: { name: punctuation.definition.tag.end }
+            contentName: markup.deleted
+
+      preformatted:
+        patterns:
+          -
+            name: meta.tag.block.preformatted
+            begin: (<)(pre)(.*?)(>)
+            end: (</)(\2)(>)
+            beginCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3:
+                patterns:
+                  - include: "#attribute"
+              4: { name: punctuation.definition.tag.end }
+            endCaptures:
+              1: { name: punctuation.definition.tag.begin }
+              2: { name: entity.name.tag }
+              3: { name: punctuation.definition.tag.end }
+
+
 
   table:
     patterns:
@@ -304,11 +306,21 @@ repository:
 
   attribute:
     patterns:
-      - match: "(\\w?)[ ]*(=[ ]*(([\"].*?[\"])|(['].*?['])))?"
+      - match: (\w+)\s*(?:=\s*(.*?)(?:\s+|$))?
         captures:
           1: { name: entity.other.attribute-name }
-          4: { name: string.quoted.double }
-          5: { name: string.quoted.single }
+          2:
+            patterns:
+              - include: "#string"
+
+  string:
+    patterns:
+      - name: string.quoted.double
+        begin: \"
+        end: \"
+      - name: string.quoted.single
+        begin: \'
+        end: \'
 
   url:
     patterns:
