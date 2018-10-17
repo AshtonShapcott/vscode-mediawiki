@@ -93,14 +93,25 @@ repository:
 
   emphasis:
     patterns:
-      - match: (('''''.*'''''))
+      -
+        match: (''''')((.*?))(''''')
         captures:
-          1: { name: markup.bold }
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: markup.bold }
+          3: { name: markup.italic }
+          4: { name: punctuation.definition.tag.end }
+      -
+        match: "(''')(.*?)(''')"
+        captures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: markup.bold }
+          3: { name: punctuation.definition.tag.end }
+      - 
+        match: "('')(.*?)('')"
+        captures:
+          1: { name: punctuation.definition.tag.begin }
           2: { name: markup.italic }
-      - name: markup.bold
-        match: "'''.*'''"
-      - name: markup.italic
-        match: "''.*''"
+          3: { name: punctuation.definition.tag.end }
 
   heading:
     patterns:
@@ -140,8 +151,8 @@ repository:
       html:
         patterns:
           - name: meta.tag.block.html
-            begin: (<)(html)(>)
-            end: (</)(html)(>)
+            begin: (?i)(<)(html)(>)
+            end: (?i)(</)(html)(>)
             beginCaptures:
               1: { name: punctuation.definition.tag.begin }
               2: { name: entity.name.tag }
@@ -156,8 +167,8 @@ repository:
       nowiki:
         patterns:
           - name: meta.tag.block.nowiki
-            begin: (<)(nowiki)(>)
-            end: (</)(nowiki)(>)
+            begin: (?i)(<)(nowiki)(>)
+            end: (?i)(</)(nowiki)(>)
             beginCaptures:
               1: { name: punctuation.definition.tag.begin }
               2: { name: entity.name.tag }
@@ -190,8 +201,8 @@ repository:
         patterns:
           -
             name: meta.tag.block.deleted
-            begin: (<)(del|s)(\s+.*?)?(>)
-            end: (</)(\2)(>)
+            begin: (?i)(<)(del|s)(\s+.*?)?(>)
+            end: (?i)(</)(\2)(>)
             beginCaptures:
               1: { name: punctuation.definition.tag.begin }
               2: { name: entity.name.tag }
