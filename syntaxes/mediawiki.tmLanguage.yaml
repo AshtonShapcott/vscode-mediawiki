@@ -292,6 +292,7 @@ repository:
                   - include: "#attribute"
               4: { name: punctuation.definition.tag }
               5: { name: markup.bold }
+          - include: $self
       
       data:
         name: meta.tag.block.table.data
