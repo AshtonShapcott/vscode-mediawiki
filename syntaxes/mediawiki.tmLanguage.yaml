@@ -22,15 +22,14 @@ repository:
     patterns:
       -
         name: storage.type.variable
-        match: "{{{(.*?)}}}"
-        captures:
-          1:
-            patterns:
-              -
-                match: \s*(\w+)\s*(\|)?
-                captures:
-                  1: { name: variable.other }
-                  2: { name: keyword.operator }
+        begin: "{{{"
+        end: "}}}"
+        patterns:
+          -
+            match: \s*(\w+)\s*(\|)?
+            captures:
+              1: { name: variable.other }
+              2: { name: keyword.operator }
 
   entity:
     patterns:
@@ -50,24 +49,26 @@ repository:
   template:
     patterns:
       - name: meta.template
-        begin: ({{)([^\|]*)
-        end: (}})
+        begin: ({{)\s*([\w ]+)\s*
+        end: "}}"
         beginCaptures:
-          1: { name: punctuation.definition.tag.begin }
+          1: { name: storage.type.function }
           2: { name: entity.name.function }
         endCaptures:
-          1: { name: punctuation.definition.tag.end }
+          0: { name: storage.type.function }
         patterns:
-          - name: meta.template.attribute
-            begin: "(\\|)([^\\|]*?)="
+          -
+            name: meta.template.attribute
+            begin: (\|)\s*(\w+)=
             end: "(?=}}|[|])"
             beginCaptures:
               1: { name: punctuation.definition.tag.begin }
-              2: { name: entity.other.attribute-name }
+              2: { name: variable.parameter.function }
             patterns:
               - include: "$self"
-          - name: meta.template.value
-            match: "(\\|)(.*)"
+          -
+            name: meta.template.value
+            match: (\|)(.*?)(?=}}|[|\n])
             captures:
               1: { name: punctuation.definition.tag.begin }
 
