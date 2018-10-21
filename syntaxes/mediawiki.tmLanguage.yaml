@@ -75,13 +75,20 @@ repository:
   link:
     patterns:
       - name: meta.tag.link.internal
-        match: (\[\[)([^\|]*?)((\|)(.*?))?(\]\])
-        captures:
+        begin: (\[\[)\s*(.+?)[ ]*(\|)
+        end: \]\]
+        beginCaptures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: markup.underline.link }
-          4: { name: punctuation.definition.tag }
-          5: { name: string.unquoted }
-          6: { name: punctuation.definition.tag.end }
+          3: { name: punctuation.definition.tag }
+        endCaptures:
+          0: { name: punctuation.definition.tag.end }
+        contentName: string.unquoted
+        patterns:
+          - include: "$self"
+
+
+
       - name: meta.tag.link.external
         match: (\[)(.*?)[\s]+(.*?)(\])
         captures:
@@ -197,7 +204,7 @@ repository:
         patterns:
           -
             name: meta.tag.block.inserted
-            begin: (<)(ins|u)(.*?)(>)
+            begin: (<)(ins|u)(\s.*?)(>)
             end: (</)(\2)(>)
             beginCaptures:
               1: { name: punctuation.definition.tag.begin }
