@@ -343,12 +343,10 @@ repository:
 
   attribute:
     patterns:
-      - match: (\w+)\s*(?:=\s*(.*?)(?:\s+|$))?
-        captures:
-          1: { name: entity.other.attribute-name }
-          2:
-            patterns:
-              - include: "#string"
+      - include: "#string"
+      - 
+        name: entity.other.attribute-name
+        match: \w+
 
   string:
     patterns:
