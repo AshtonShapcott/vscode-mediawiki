@@ -189,12 +189,15 @@ repository:
       nowiki:
         patterns:
           - name: meta.tag.block.nowiki
-            begin: (?i)(<)(nowiki)(>)
+            begin: (?i)(<)(nowiki)(\s.*?)(>)
             end: (?i)(</)(nowiki)(>)
             beginCaptures:
               1: { name: punctuation.definition.tag.begin }
               2: { name: entity.name.tag }
-              3: { name: punctuation.definition.tag.end }
+              3:
+                patterns:
+                  - include: "#attribute"
+              4: { name: punctuation.definition.tag.end }
             endCaptures:
               1: { name: punctuation.definition.tag.begin }
               2: { name: entity.name.tag }
@@ -223,7 +226,7 @@ repository:
         patterns:
           -
             name: meta.tag.block.deleted
-            begin: (?i)(<)(del|s)(\s+.*?)?(>)
+            begin: (?i)(<)(del|s)(\s.*?)?(>)
             end: (?i)(</)(\2)(>)
             beginCaptures:
               1: { name: punctuation.definition.tag.begin }
@@ -242,7 +245,7 @@ repository:
         patterns:
           -
             name: meta.tag.block.preformatted
-            begin: (<)(pre)(.*?)(>)
+            begin: (<)(pre)(\s.*?)(>)
             end: (</)(\2)(>)
             beginCaptures:
               1: { name: punctuation.definition.tag.begin }
