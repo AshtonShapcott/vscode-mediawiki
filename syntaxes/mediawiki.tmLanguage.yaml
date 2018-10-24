@@ -163,11 +163,27 @@ repository:
         patterns:
           - include: text.html.basic
       -
-        # Allowed tags are taken from the sanitizer. Refer to:
+        # STANDARD TAGS
+        # Refer to:
         # https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/parser/Sanitizer.php
         name: meta.tag.block.any
-        begin: (?i)(<\/?)(div|center|span|h1|h2|h3|h4|h5|h6|bdo|em|strong|cite|dfn|code|samp|kbd|var|abbr|blockquote|q|sub|sup|p|br|wbr|pre|ins|del|ul|ol|li|dl|dd|dt|table|caption|thead|tfoot|tbody|colgroup|col|tr|td|th|a|img|video|source|track|tt|b|i|big|small|strike|s|u|font|hr|ruby|rb|rp|rt|rtc|math|figure|figcaption|bdi|data|time|mark|meta|link)(?=\s|>)
-        end: (>)
+        begin: (?i)(<\/?)(div|center|span|h1|h2|h3|h4|h5|h6|bdo|em|strong|cite|dfn|code|samp|kbd|var|abbr|blockquote|q|sub|sup|p|pre|ins|del|ul|ol|li|dl|dd|dt|table|caption|thead|tfoot|tbody|colgroup|col|tr|td|th|a|img|video|source|track|tt|b|i|big|small|strike|s|u|font|ruby|rb|rp|rt|rtc|math|figure|figcaption|bdi|data|time|mark)(?=\W)
+        end: (\/)?(>)
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+        endCaptures:
+          1: { name: invalid.illegal.characters-not-allowed-here }
+          2: { name: punctuation.definition.tag.end }
+        patterns:
+          - include: "#attribute"
+      -
+        # SELF-CLOSING TAGS
+        # Refer to:
+        # https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/parser/Sanitizer.php
+        name: meta.tag.block.any
+        begin: (?i)(<\/?)(br|wbr|hr|meta|link)(?=\W)
+        end: (\/?>)
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: entity.name.tag }
@@ -176,6 +192,8 @@ repository:
         patterns:
           - include: "#attribute"
       -
+        # HTML Tag
+        # It's assumed that if the user is using this tag they've enabled the setting in MediaWiki.
         name: meta.tag.block.html
         begin: (?i)(<\/?)(html)(?=\W)
         end: (>)
