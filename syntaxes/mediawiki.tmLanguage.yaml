@@ -144,6 +144,9 @@ repository:
           3: { name: punctuation.definition.tag.end }
 
   tag:
+    # Implements whitelisted HTML tags.
+    # Refer to:
+    # https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/parser/Sanitizer.php
     patterns:
       -
         name: meta.tag.block.html
@@ -163,11 +166,21 @@ repository:
         patterns:
           - include: text.html.basic
       -
-        # STANDARD TAGS
-        # Refer to:
-        # https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/parser/Sanitizer.php
-        name: meta.tag.block.any
-        begin: (?i)(<\/?)(div|center|span|h1|h2|h3|h4|h5|h6|bdo|em|strong|cite|dfn|code|samp|kbd|var|abbr|blockquote|q|sub|sup|p|pre|ins|del|ul|ol|li|dl|dd|dt|table|caption|thead|tfoot|tbody|colgroup|col|tr|td|th|a|img|video|source|track|tt|b|i|big|small|strike|s|u|font|ruby|rb|rp|rt|rtc|math|figure|figcaption|bdi|data|time|mark)(?=\W)
+        # SELF-CLOSING
+        name: meta.tag.other
+        begin: (?i)(<)(br|wbr|hr|meta|link)(?=\W)
+        end: (\/?>)
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+        endCaptures:
+          1: { name: punctuation.definition.tag.end }
+        patterns:
+          - include: "#attribute"
+      -
+        # STANDARD
+        name: meta.tag.block
+        begin: (?i)(<\/?)(div|center|span|h1|h2|h3|h4|h5|h6|bdo|em|strong|cite|dfn|code|samp|kbd|var|abbr|blockquote|q|sub|sup|p|pre|ins|del|ul|ol|li|dl|dd|dt|table|caption|thead|tfoot|tbody|colgroup|col|tr|td|th|a|img|video|source|track|tt|b|i|big|small|strike|s|u|font|ruby|rb|rp|rt|rtc|math|figure|figcaption|bdi|data|time|mark|html)(?=\W)
         end: (\/)?(>)
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
@@ -178,28 +191,14 @@ repository:
         patterns:
           - include: "#attribute"
       -
-        # SELF-CLOSING TAGS
-        # Refer to:
-        # https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/parser/Sanitizer.php
-        name: meta.tag.block.any
-        begin: (?i)(<\/?)(br|wbr|hr|meta|link)(?=\W)
+        # SELF-CLOSING, BROKEN
+        name: meta.tag.other
+        begin: (?i)(<\/)(br|wbr|hr|meta|link)(?=\W)
         end: (\/?>)
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
-        endCaptures:
-          1: { name: punctuation.definition.tag.end }
-        patterns:
-          - include: "#attribute"
-      -
-        # HTML Tag
-        # It's assumed that if the user is using this tag they've enabled the setting in MediaWiki.
-        name: meta.tag.block.html
-        begin: (?i)(<\/?)(html)(?=\W)
-        end: (>)
-        beginCaptures:
-          1: { name: punctuation.definition.tag.begin }
-          2: { name: entity.name.tag }
+          2: { name: invalid.illegal.characters-not-allowed-here }
+          3: { name: entity.name.tag }
         endCaptures:
           1: { name: punctuation.definition.tag.end }
         patterns:
