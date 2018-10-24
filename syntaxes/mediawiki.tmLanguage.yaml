@@ -146,7 +146,24 @@ repository:
   tag:
     patterns:
       -
-        # Allowed tags are taken from the sanitizer.
+        name: meta.tag.block.html
+        begin: (?i)(<)(html)(\s+.*?)?(>)
+        end: (?i)(<\/)(html)\s*(>)
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+          3:
+            patterns:
+              - include: "#attribute"
+          4: { name: punctuation.definition.tag.end }
+        endCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+          3: { name: punctuation.definition.tag.end }
+        patterns:
+          - include: text.html.basic
+      -
+        # Allowed tags are taken from the sanitizer. Refer to:
         # https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/parser/Sanitizer.php
         name: meta.tag.block.any
         begin: (?i)(<\/?)(div|center|span|h1|h2|h3|h4|h5|h6|bdo|em|strong|cite|dfn|code|samp|kbd|var|abbr|blockquote|q|sub|sup|p|br|wbr|pre|ins|del|ul|ol|li|dl|dd|dt|table|caption|thead|tfoot|tbody|colgroup|col|tr|td|th|a|img|video|source|track|tt|b|i|big|small|strike|s|u|font|hr|ruby|rb|rp|rt|rtc|math|figure|figcaption|bdi|data|time|mark|meta|link)(?=\s|>)
@@ -158,22 +175,17 @@ repository:
           1: { name: punctuation.definition.tag.end }
         patterns:
           - include: "#attribute"
-    # repository:
-    #   html:
-    #     patterns:
-    #       - name: meta.tag.block.html
-    #         begin: (?i)(<)(html)(>)
-    #         end: (?i)(</)(html)(>)
-    #         beginCaptures:
-    #           1: { name: punctuation.definition.tag.begin }
-    #           2: { name: entity.name.tag }
-    #           3: { name: punctuation.definition.tag.end }
-    #         endCaptures:
-    #           1: { name: punctuation.definition.tag.begin }
-    #           2: { name: entity.name.tag }
-    #           3: { name: punctuation.definition.tag.end }
-    #         patterns:
-    #           - include: text.html.basic
+      -
+        name: meta.tag.block.html
+        begin: (?i)(<\/?)(html)(?=\W)
+        end: (>)
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+        endCaptures:
+          1: { name: punctuation.definition.tag.end }
+        patterns:
+          - include: "#attribute"
 
   table:
     patterns:
