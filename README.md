@@ -14,7 +14,6 @@ gulp
 
 ## Planned Features
 
-* Provide support for various HTML tags allowed in MediaWiki markup. Possibly mark other tags as invalid. [Reference](https://www.mediawiki.org/wiki/Help:Formatting/en#HTML_tags)
 * Allow for the use of the `<html>` MediaWiki tag for use when `$wgRawHtml` is enabled. [Reference](https://www.mediawiki.org/wiki/Manual:$wgRawHtml)
 
 ## Known Issues
