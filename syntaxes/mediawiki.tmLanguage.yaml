@@ -62,15 +62,18 @@ repository:
             begin: (\|)\s*(\w+)=
             end: "(?=}}|[|])"
             beginCaptures:
-              1: { name: punctuation.definition.tag.begin }
+              1: { name: storage }
               2: { name: variable.parameter.function }
             patterns:
               - include: "$self"
           -
             name: meta.template.value
-            match: (\|)(.*?)(?=}}|[|\n])
+            begin: (\|)(.*?)
+            end: (?=}}|[|])
             captures:
-              1: { name: punctuation.definition.tag.begin }
+              1: { name: storage }
+            patterns:
+              - include: "$self"
 
   link:
     patterns:
@@ -220,9 +223,9 @@ repository:
         patterns:
           - include: "#template"
           - include: "#caption"
-          - include: "#row"
-          - include: "#heading"
-          - include: "#data"
+          - include: "#tr"
+          - include: "#th"
+          - include: "#td"
     repository:
       caption:
         name: meta.tag.block.table-caption
@@ -231,15 +234,15 @@ repository:
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
 
-      row:
-        name: meta.tag.block.table-row
+      tr:
+        name: meta.tag.block.tr
         match: "^\\s*(\\|\\-)[\\s]*(.*)"
         captures:
           1: { name: punctuation.definition.tag.begin }
           2: { name: invalid.illegal }
       
-      heading:
-        name: meta.tag.block.table.heading
+      th:
+        name: meta.tag.block.th.heading
         begin: ^\s*(!)((.*?)(\|))?(.*?)(?=(!!)|$)
         end: $
         beginCaptures:
@@ -251,7 +254,7 @@ repository:
           5: { name: markup.bold }
         patterns:
           -
-            name: meta.tag.block.table.heading.inline
+            name: meta.tag.block.th.inline
             match: (!!)((.*?)(\|))?(.*?)(?=(!!)|$)
             captures:
               1: { name: punctuation.definition.tag.begin }
@@ -262,26 +265,26 @@ repository:
               5: { name: markup.bold }
           - include: $self
       
-      data:
-        name: meta.tag.block.table.data
-        begin: ^\s*(\|)((.*?)(\|^[\|]))?
-        end: "$"
+      td:
+        name: meta.tag.block.td
+        begin: ^\s*(\|)(?:([^\|]*)(\|(?!\|)))?
+        end: $
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
-          3:
+          2:
             patterns:
               - include: "#attribute"
-          4: { name: punctuation.definition.tag }
+          3: { name: punctuation.definition.tag }
         patterns:
-          - name: meta.tag.block.table.data.inline
-            begin: (\|\|)((.*?)(\|^[\|]))?
+          - name: meta.tag.block.td.inline
+            begin: (\|\|)((.*?)((?!\|)\|(?!\|)))?
             end: $
             beginCaptures:
               1: { name: punctuation.definition.tag.begin }
-              3:
+              2:
                 patterns:
                   - include: "#attribute"
-              4: { name: punctuation.definition.tag }
+              3: { name: punctuation.definition.tag }
           - include: $self
 
   attribute:
