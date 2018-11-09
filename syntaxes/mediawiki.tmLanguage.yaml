@@ -152,6 +152,21 @@ repository:
     # https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/parser/Sanitizer.php
     patterns:
       -
+        name: meta.tag.block.nowiki
+        begin: (?i)(<)(nowiki)(\s+.*?)?(>)
+        end: (?i)(<\/)(nowiki)\s*(>)
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+          3:
+            patterns:
+              - include: "#attribute"
+          4: { name: punctuation.definition.tag.end }
+        endCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+          3: { name: punctuation.definition.tag.end }
+      -
         name: meta.tag.block.html
         begin: (?i)(<)(html)(\s+.*?)?(>)
         end: (?i)(<\/)(html)\s*(>)
