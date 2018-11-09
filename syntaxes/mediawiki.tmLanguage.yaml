@@ -184,6 +184,18 @@ repository:
         patterns:
           - include: text.html.basic
       -
+        name: meta.tag.block.any
+        begin: (?i)(<\/?)(noinclude|includeonly)(?=\W)
+        end: (\/)?(>)
+        beginCaptures:
+          1: { name: punctuation.definition.tag.begin }
+          2: { name: entity.name.tag }
+        endCaptures:
+          1: { name: invalid.illegal.characters-not-allowed-here }
+          2: { name: punctuation.definition.tag.end }
+        patterns:
+          - include: "#attribute"
+      -
         # SELF-CLOSING
         name: meta.tag.other
         begin: (?i)(<)(br|wbr|hr|meta|link)(?=\W)
