@@ -12,12 +12,19 @@ patterns:
   - include: "#emphasis"
   - include: "#tag"
   - include: "#table"
+  - include: "#hr"
   - include: "#heading"
   - include: "#link"
   - include: "#list"
   - include: "#template"
 
 repository:
+  hr:
+    patterns:
+      -
+        name: markup.bold
+        match: ^----
+
   variable:
     patterns:
       -
@@ -291,10 +298,10 @@ repository:
               4: { name: punctuation.definition.tag }
               5: { name: markup.bold }
           - include: $self
-      
+
       td:
         name: meta.tag.block.td
-        begin: ^\s*(\|)(?:([^\|]*)(\|(?!\|)))?
+        begin: ^\s*(\|) #(?:(.*?)(\|))?
         end: $
         beginCaptures:
           1: { name: punctuation.definition.tag.begin }
@@ -303,16 +310,18 @@ repository:
               - include: "#attribute"
           3: { name: punctuation.definition.tag }
         patterns:
-          - name: meta.tag.block.td.inline
-            begin: (\|\|)((.*?)((?!\|)\|(?!\|)))?
-            end: $
-            beginCaptures:
-              1: { name: punctuation.definition.tag.begin }
-              2:
-                patterns:
-                  - include: "#attribute"
-              3: { name: punctuation.definition.tag }
-          - include: $self
+          # -
+          #   name: meta.tag.block.td.inline
+          #   begin: (\|\|)((.*?)((?!\|)\|(?!\|)))?
+          #   end: $
+          #   beginCaptures:
+          #     1: { name: punctuation.definition.tag.begin }
+          #     2:
+          #       patterns:
+          #         - include: "#attribute"
+          #     3: { name: punctuation.definition.tag }
+          -
+            include: "$self"
 
   attribute:
     patterns:
