@@ -23,7 +23,7 @@ repository:
     patterns:
       -
         name: markup.bold
-        match: ^----
+        match: ^[-]{4,}
 
   variable:
     patterns:
@@ -255,6 +255,7 @@ repository:
         endCaptures:
           0: { name: punctuation.definition.tag.end }
         patterns:
+          - include: "#comment"
           - include: "#template"
           - include: "#caption"
           - include: "#tr"
